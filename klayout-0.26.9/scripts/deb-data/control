@@ -1,0 +1,13 @@
+Package: klayout
+Version: %VERSION%-1
+Architecture: %ARCH%
+Maintainer: Matthias Köfferlein <matthias@koefferlein.de>
+Installed-Size: %SIZE%
+Depends: %DEPENDS%
+Section: contrib/misc
+Priority: optional
+Description: Chip mask layout review and edit utility
+ Klayout is a graphical viewer and editor for a.o. GDSII, OASIS, CIF 
+ and other files.
+ Its features include net highlighting and XOR-ing of two layouts,
+ scripting capabilities in Ruby and Python and much more.

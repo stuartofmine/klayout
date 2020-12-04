@@ -1,0 +1,67 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.pdb
+
+# Compiled Python files
+*.pyc
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build, temporary and binary directories for shadow build:
+build-*
+bin-*
+mkqtdecl.tmp
+testtmp
+*build.macos*
+*bin.macos*
+
+# private data
+private
+src/plugins/*
+!src/plugins/streamers
+!src/plugins/tools
+!src/plugins/common
+!src/plugins/*.pro
+!src/plugins/*.pri
+
+# QTCreator files
+src/klayout.pro.user
+
+# python setuptools eggs
+*.egg-info/
+build/
+dist/
+
+
+# IDEs
+.vscode
+
+
+# Macos artifacts
+*.dmg
+*.dmg.md5

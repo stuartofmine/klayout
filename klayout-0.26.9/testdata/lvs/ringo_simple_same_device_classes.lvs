@@ -1,0 +1,101 @@
+
+source($lvs_test_source, "RINGO")
+
+report_lvs($lvs_test_target_lvsdb, true)
+
+writer = write_spice(true, false)
+target_netlist($lvs_test_target_cir, writer, "Extracted by KLayout")
+
+schematic("ringo.cir")
+
+# preempt configuration
+same_device_classes("PM", "PMOS")
+
+deep
+
+# Drawing layers
+
+nwell       = input(1, 0)
+active      = input(2, 0)
+pplus       = input(3, 0)
+nplus       = input(4, 0)
+poly        = input(5, 0)
+contact     = input(8, 0)
+metal1      = input(9, 0)
+via1        = input(10, 0)
+metal2      = input(11, 0)
+thickox     = input(12, 0)
+
+# Bulk layer for terminal provisioning
+
+bulk        = polygon_layer
+
+# Computed layers
+
+active_in_nwell       = active & nwell
+pactive               = active_in_nwell & pplus
+pactive_hv            = pactive & thickox
+pgate_hv              = pactive_hv & poly
+psd_hv                = pactive_hv - pgate_hv
+pactive_lv            = pactive - thickox
+pgate_lv              = pactive_lv & poly
+psd_lv                = pactive_lv - pgate_lv
+psd                   = pactive - poly
+ntie                  = active_in_nwell & nplus
+
+active_outside_nwell  = active - nwell
+nactive               = active_outside_nwell & nplus
+nactive_hv            = nactive & thickox
+ngate_hv              = nactive_hv & poly
+nsd_hv                = nactive_hv - ngate_hv
+nactive_lv            = nactive - thickox
+ngate_lv              = nactive_lv & poly
+nsd_lv                = nactive_lv - ngate_lv
+nsd                   = nactive - poly
+ptie                  = active_outside_nwell & pplus
+
+# Device extraction
+
+# PMOS transistor device extraction
+extract_devices(mos4("PM"), { "SD" => psd_lv, "G" => pgate_lv, "W" => nwell, 
+                              "tS" => psd, "tD" => psd, "tG" => poly, "tW" => nwell })
+
+# NMOS transistor device extraction
+extract_devices(mos4("NM"), { "SD" => nsd_lv, "G" => ngate_lv, "W" => bulk, 
+                              "tS" => nsd, "tD" => nsd, "tG" => poly, "tW" => bulk })
+
+# PMOS transistor device extraction (HV)
+extract_devices(mos4("PMHV"), { "SD" => psd_hv, "G" => pgate_hv, "W" => nwell, 
+                                "tS" => psd, "tD" => psd, "tG" => poly, "tW" => nwell })
+
+# NMOS transistor device extraction (HV)
+extract_devices(mos4("NMHV"), { "SD" => nsd_hv, "G" => ngate_hv, "W" => bulk, 
+                                "tS" => nsd, "tD" => nsd, "tG" => poly, "tW" => bulk })
+
+# Define connectivity for netlist extraction
+
+# Inter-layer
+connect(psd,        contact)
+connect(nsd,        contact)
+connect(poly,       contact)
+connect(ntie,       contact)
+connect(nwell,      ntie)
+connect(ptie,       contact)
+connect(contact,    metal1)
+connect(metal1,     via1)
+connect(via1,       metal2)
+
+# Global
+connect_global(bulk, "SUBSTRATE")
+connect_global(ptie, "SUBSTRATE")
+
+# Compare section
+
+netlist.simplify
+
+same_device_classes("NM", "NMOS")
+same_device_classes("PMHV", "PMOSHV")
+same_device_classes("NMHV", "NMOSHV")
+
+compare
+

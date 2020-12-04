@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "klayout_doc.dtd">
+
+<doc>
+
+  <title>About Packages</title>
+  <keyword name="Package Manager"/>
+  <keyword name="Packages"/>
+  <keyword name="Salt"/>
+
+  <p>
+  "Salt" is KLayout's package manager which allows selecting and installing packages from a global repository. 
+  Packages make KLayout more tasty. Packages (the "grains") may cover a variety of features:
+  </p>
+
+  <ul>
+    <li>Ruby or Python macros</li>
+    <li>DRC runsets</li>
+    <li>Technologies</li>
+    <li>Fonts for the Basic.TEXT PCell</li>
+    <li>Static layout libraries</li>
+    <li>PCell libraries</li>
+    <li>Code libraries for Ruby and Python</li>
+    <li>Binary extensions</li>
+  </ul>
+
+  <p>
+  Packages can depend on other packages - these are installed automatically if a package requires them and they are not installed yet.
+  </p>
+
+  <p>
+  Packages are identified by name. A package name needs to be unique in the package universe. 
+  You can use a prefixed name like <tt>www.mydomain.org/nameofpackage</tt> to create a non-ambiguous name.
+  Use a slash to separate the prefix from the actual package name.
+  The choice of the prefix is entirely up to you as long as it contains letters, digits, underscores, hypthens or dots. 
+  You can use a domain name that is owned by 
+  yourself for example. You can use multiple prefixes to further differentiate the packages
+  inside your namespace.
+  </p>
+
+  <p>
+  Packages also come with version information, so KLayout can check for updates and install 
+  them if required. KLayout will assume strict upward compatibility. This specifically 
+  applies to packages that other packages are depending on (such as code libraries). 
+  If you need to change them in a non-backward compatible way, you'd need to provide 
+  a new package with a different name.
+  </p>
+
+  <p>
+  Packages come with some meta data such as authoring information, an optional icon and 
+  screen shot image, license information and more. The more information you provide, the 
+  more useful a package will become.
+  </p>
+
+  <p>
+  The key component for public package deployment is the "Salt.Mine" package repository 
+  service. This is a web service that maintains a package index. It 
+  does not host the packages, but stores links to the actual hosting site. In order 
+  to author a package, you need to upload the package to one of the supported host 
+  sites and register your package on the Salt.Mine page. Registration is a simple 
+  process and the only information required is the link to your host site and a mail 
+  account for confirmation.
+  </p>
+
+  <h2>Installing Packages</h2>
+
+  <p>
+  To install external packages, open the package manager with "Tools/Manage Packages".
+  On the "Install New Packages" page, a list of available packages is shown. Select 
+  the desired packages and mark them using the check mark button. Marked packages will
+  be downloaded and installed with the "Apply" button.
+  </p>
+
+  <p>
+  A filter above the package list allows selecting packages by name.
+  The right panel shows details about the package currently selected.
+  </p>
+
+  <h2>Updating Packages</h2>
+
+  <p>
+  To check for updates, use the "Update Packages" tab of the package manager.
+  In the list, those packages for which updates are available are shown.
+  Mark packages for update using the check mark button. Click "Apply" to 
+  apply the selected updates.
+  </p>
+
+  <h2>Uninstalling Packages</h2>
+
+  <p>
+  To uninstall packages, open the package manager using "Tools/Manage Packages".
+  Go to the "Current Packages" tab. Select a package and use the "Remove Package"
+  button to uninstall the package.
+  </p>
+
+  <h2>Creating Packages</h2>
+
+  <p>
+  For package development you can utilize KLayout to initialize and edit the files inside 
+  the package folder or populate the folder manually.
+  </p>
+
+  <p>
+  KLayout offers initialization of new packages from templates. You can modify that package
+  according to your requirements afterwards.
+  To create a package from a template, open the package manager using "Tools/Manage Packages",
+  go to the "Current Packages" tab and push the "Create (Edit) Package" button.
+  Chose a template from the list that opens and enter a package name (with prefix, if 
+  desired). Select "Ok" to let KLayout create a new package based on the template you
+  selected.
+  </p>
+
+  <p>
+  The package details can be edited with the "pen" button at the top right of the 
+  right details panel. Please specify at least some author information, a license
+  model and a version. If the package needs other packages, the dependencies can be 
+  listed in the "Depends on" table. Those packages will be automatically installed
+  together with the new package. The showcase image can be a screen shot that gives
+  some idea what the package will do.
+  The package details are kept in a file called "grain.xml" inside the package 
+  folder. You can also edit this file manually. The "grain.xml" is the basic description
+  file for the package.
+  </p>
+
+  <p>
+  If the package is a macro or static library package, the macro editor can be used
+  to edit the package files. If the package is a tech package, the technology manager
+  can be used to edit the technology inside the package. To populate the package
+  folder with other files use your favorite editor of KLayout itself for layout files.
+  </p>
+
+  <h2>Deployment inside your organisation</h2>
+
+  <p>
+  Once a package is finished, it needs to be deployed to make it available to other
+  users. Deployment basically means to put it on some public place where others
+  can download the package. For local deployment inside an organisation, 
+  this can be a web server or a folder on 
+  a file server. KLayout talks WebDAV, so the web server needs to offer WebDAV 
+  access. A subversion (SVN) server provides WebDAV by default, so this is a good
+  choice. Git can be used too, but you'll need to mirror the Git repository to 
+  a file system or WebDAV share.
+  </p>
+
+  <p>
+  After a package has been made available for download, it needs to be entered 
+  in the package index. For local deployment, the index can be a file hosted
+  on a web server or on the file system. The package index location needs to be 
+  specified by the <tt>KLAYOUT_SALT_MINE</tt> environment variable which contains the 
+  download URL of the package index file.
+  </p>
+
+  <p>
+  For public deployment, the Salt.Mine service (<tt>http://sami.klayout.org</tt>) is used to register 
+  new packages in the package index. By default, KLayout loads the package index from that service, so
+  once your package is registered there, everyone using KLayout will see it.
+  </p>
+
+  <h2>The Package Index</h2>
+
+  <p>
+  Public Packages are published on the Salt.Mine server. This is a web service that delivers a 
+  packages index with some meta data such as current version, the icon 
+  and a brief description. KLayout uses this list to inform users of packages available
+  for installation and available updates. For local deployment, the package index can be served by other
+  ways too. The only requirement is to be accessible by a http, https or file URL.
+  </p>
+
+  <p>
+  The basic format of the index is XML with this structure:
+  </p>
+
+  <pre>&lt;salt-mine&gt;
+  &lt;salt-grain&gt;
+    &lt;name&gt;name&lt;/name&gt;
+    &lt;version&gt;Version&lt;/version&gt;
+    &lt;title&gt;Title of the package&lt;/title&gt;
+    &lt;doc&gt;A brief description&lt;/doc&gt;
+    &lt;doc-url&gt;Documentation URL&lt;/doc-url&gt;
+    &lt;url&gt;Download URL&lt;/url&gt;
+    &lt;license&gt;License model&lt;/license&gt;
+    &lt;icon&gt;Icon image: base64-encoded, 64x64 max, PNG preferred&lt;/icon&gt;
+  &lt;/salt-grain&gt;
+  ...
+  &lt;include&gt;URL to include other index files into this one&lt;/include&gt;
+  ...
+&lt;/salt-mine&gt;</pre>
+
+  <p>
+  You can include other repositories - specifically the default one - into a 
+  custom XML file. This allows extending the public index with local packages.
+  </p>
+
+  <p>
+  When the package manager is opened, KLayout will download the index from 
+  <tt>http://sami.klayout.org/repository.xml</tt>. You can set the <tt>KLAYOUT_SALT_MINE</tt>
+  environment variable to a different URL which makes KLayout use another dictionary
+  service, i.e. one inside your own organisation. This service can be any HTTP server 
+  that delivers a package list in the same format than the Salt.Mine package service.
+  The URL can also be a "file:" scheme URL. In this case, KLayout will download the 
+  list from the given file location.
+  </p>
+
+  <p>
+  When installing a package, KLayout will simply download the files from the URL given 
+  in the package list. KLayout employs the WebDAV protocol to download the files. 
+  This protocol is spoken by Subversion and GitHub with the subversion bridge. The 
+  latter requires a simple translation of the original Git URL's to obtain the 
+  subversion equivalent.
+  </p>
+
+</doc>

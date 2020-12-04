@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/built-in-macros" >
+        <file alias="qobject_helper.lym">built_in_macros/qobject_helper.lym</file>
+    </qresource>
+    <qresource prefix="/built-in-pymacros" >
+        <file alias="qt_helper.lym">built_in_pymacros/qt_helper.lym</file>
+    </qresource>
+</RCC>

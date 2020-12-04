@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "klayout_doc.dtd">
+
+<doc>
+
+  <title>LVS Compare</title>
+  <keyword name="LVS"/>
+  <keyword name="LVS Compare"/>
+
+  <h2-index/>
+
+  <p>
+  The actual compare step is rather simple. Provided you have set up the extraction 
+  (<a href="/about/drc_ref_global.xml#extract_devices">extract_devices</a>), the
+  connectivity (<a href="/about/drc_ref_global.xml#connect">connect</a>,
+  <a href="/about/drc_ref_global.xml#connect_global">connect_global</a>, 
+  <a href="/about/drc_ref_global.xml#connect_implicit">connect_implicit</a>) and
+  provided a reference netlist (<a href="/about/drc_ref_global.xml#schematic">schematic</a>),
+  this function will perform the actual compare:
+  </p>
+
+  <pre>compare</pre>
+
+  <p>
+  This method (<a href="/about/lvs_ref_global.xml#compare">compare</a> 
+  will extract the netlist (if not already done) and compare it against
+  the schematic. It returns true on success and false otherwise, in case
+  you like to take specific actions on success or failure.
+  </p>
+
+  <p>
+  The compare step can configured by providing hints.
+  </p>
+
+  <h2>Net equivalence hint</h2>
+
+  <p>
+  It can be useful to declare two nets as identical, at least for debugging.
+  The compare algorithm will then be able to deduce the real causes for mismatches.
+  It is helpful for example to provide equivalence for the power nets, because
+  netlist compare fails will often cause the power nets no to be mapped. This in 
+  turn prevents matching of other, good parts of the circuit. To supply a 
+  power net equivalence for "VDD" within a circuit (e.g. "LOGIC"), use this statement:
+  </p>
+
+  <pre>same_nets("LOGIC", "VDD", "VDD:P")</pre>
+
+  <p>
+  In this example it is assumed that the power net is labeled "VDD" in the 
+  layout and called "VDD:P" in the schematic. Don't leave this statement in 
+  the script for final verification as it may mask real errors.
+  </p>
+
+  <p>
+  For more information about "same_nets" see <a href="/about/lvs_ref_global.xml#same_nets">same_nets</a>.
+  </p>
+
+  <h2>Circuit equivalence hint</h2>
+
+  <p>
+  By default, circuits with the same name are considered equivalent. If this is not the
+  case, equivalence can be established using the <a href="/about/lvs_ref_global.xml#same_circuits">same_circuit</a>
+  function:
+  </p>
+
+  <pre>same_circuits("CIRCUIT_IN_LAYOUT", "CIRCUIT_IN_SCHEMATIC")</pre>
+
+  <p>
+  Declaring circuits as 'same' means they will still be compared. The function is just
+  a hint where to look for the compare target.
+  </p>
+
+  <h2>Device class equivalence hint</h2>
+
+  <p>
+  By default, device classes with the same name are considered equivalent. If this is not the
+  case, equivalence can be established using the <a href="/about/lvs_ref_global.xml#same_device_classes">same_device_classes</a>
+  function:
+  </p>
+
+  <pre>same_device_classes("PMOS_IN_LAYOUT", "PMOS_IN_SCHEMATIC")
+same_device_classes("NMOS_IN_LAYOUT", "NMOS_IN_SCHEMATIC")</pre>
+
+  <p>
+  This method can be used also multiple times to establish a many-to-many 
+  equivalence:
+  </p>
+
+  <pre>same_device_classes("POLYRES", "RES")
+same_device_classes("WELLRES", "RES")</pre>
+
+  <p>
+  If one target is "nil", the corresponding devices are basically ignored:
+  </p>
+
+  <pre># ignores "POLYRES" devices:
+same_device_classes("POLYRES", nil)</pre>
+
+  <h2>Tolerances</h2>
+
+  <p>
+  When comparing device parameters, by default strict equivalence is required. 
+  However, when drawing a device like a resistor, it's usually difficult to match
+  the exact value unless the resistor calibration is consistent with drawing grids and
+  the resistor geometry is not confined by design rule constraints.
+  So sometimes the target value or a device parameter can only be approximated in 
+  the layout. This will by default lead to a mismatch.
+  </p>
+
+  <p>
+  The solution is to specify parameter tolerances. Tolerances can be specified
+  in an absolute or relative fashion. If an absolute tolerance is given, the layout
+  parameter may deviate from the target value by this tolerance either to
+  lower or higher values. So the unit of the tolerance is the same than the 
+  unit of the parameter.
+  </p>
+  
+  <p>
+  If a relative tolerance is given, the deviation is
+  computed from the target value times the tolerance. So the relative tolerance
+  is a factor and a value of 0.05 for example specifies an allowed deviation of
+  plus or minus 5%. Relative tolerances are unit-less.
+  </p>
+
+  <p>
+  It's also possible to specify both an absolute and a relative tolerance. In this
+  case, both tolerances add and the allowed deviation becomes larger.
+  </p>
+
+  <p>
+  To specify an absolute tolerance, use the <a href="/about/lvs_ref_global.xml#tolerance">tolerance</a> function:
+  </p>
+
+  <pre>tolerance("NMOS", "L", 0.05)</pre>
+
+  <p>
+  The two arguments are the name of the device class and the name of the parameter
+  for which the tolerance will be applied. In the case above, a tolerance of 50nm (the
+  unit of L is micrometer) is applied to the length parameter of "NMOS" devices.
+  </p>
+
+  <p>
+  A relative tolerance is specified as an additonal forth parameter. You can set
+  the absolute tolerance to zero to specify only relative tolerances. This will
+  specify 1% tolerance for the "L" parameter of "NMOS" devices:
+  </p>
+
+  <pre>tolerance("NMOS", "L", 0.0, 0.01)</pre>
+
+  <p>
+  There is also a more explicit notation for the tolerance:
+  </p>
+
+  <pre>tolerance("NMOS", "L", :absolute => 0.05)
+tolerance("NMOS", "L", :relative => 0.01)</pre>
+
+  <p>
+  This notation is equivalent to the two forms above.
+  </p>
+
+  <p>
+  An absolute plus relative tolerance can be specified by giving both.
+  The following calls will give you 50nm absolute and 1% relative tolerance for the "L"
+  parameter of "NMOS" devices:
+  </p>
+
+  <pre>tolerance("NMOS", "L", 0.05, 0.01)
+tolerance("NMOS", "L", :absolute => 0.05, :relative => 0.01)</pre>
+
+  <h2>Pin swapping</h2>
+
+  <p>
+  Pin swapping can be useful in cases, where a logic element has logically equivalent, but
+  physically different inputs. This is the case for example for a CMOS NAND gate where the
+  logic inputs are equivalent in function, but not in the circuit and physical implementation.
+  For such circuits, the compare function needs to be given a degree of freedom and 
+  be allowed to swap the inputs. This is achieved with the
+  <a href="/about/lvs_ref_global.xml#equivalent_pins">equivalent_pins</a>
+  function:
+  </p>
+
+  <pre>equivalent_pins("NAND_GATE", "A", "B")</pre>
+
+  <p>
+  The first argument is the name of the circuit in the layout netlist. You can 
+  only specify equivalence in layout, not in the reference schematic.
+  Multiple pins can be listed after the circuit name. All of them will be
+  considered equivalent.
+  </p>
+
+  <h2>Capacitor and resistor elimination</h2>
+
+  <p>
+  This feature allows eliminating "open" resistors and capacitors.
+  Serial resistors cannot be elimiated currently (shorted).
+  </p>
+
+  <p>
+  To eliminate all resistors with a resistance value above a certain threshold, use the
+  <a href="/about/lvs_ref_global.xml#max_res">max_res</a> function. This will
+  eliminate all resistors with a value &gt;= 1kOhm:
+  </p>
+
+  <pre>max_res(1000)</pre>
+
+  <p>
+  To eliminate all capacitors with a capacitance value below a certain threshold, use the
+  <a href="/about/lvs_ref_global.xml#min_caps">min_caps</a> function. This will
+  eliminate all capacitances with a value &lt;= 0.1fF:
+  </p>
+
+  <pre>min_caps(1e-16)</pre>
+
+  <h2>Compare and netlist hierarchy</h2>
+
+  <p>
+  Good layouts are built hierarchically and the netlist compare can make use
+  of hierarchy. "Hierarchically" means that a circuit is built from cells 
+  which itself map to subcircuits of the schematic netlist. The netlist
+  extractor tries hard to maintain the hierarchy and the netlist compare
+  will utilize the hierarchy to provide more meaningful reports and enable
+  a bottom-up design approach. 
+  </p>
+
+  <p>
+  Given a hierarchical layout and schematic netlist, the compare algorithm
+  will work bottom-up: it will first compare the leaf circuits (circuits without
+  subcircuit calls) and if those match, it will continue with the calling
+  circuits. This approach is more efficient and fosters a clean relationship
+  between layout and schematic netlist.
+  </p>
+
+  <p>
+  To enable hierarchical extraction, you must use "deep" mode (<a href="/about/drc_ref_global.xml#deep">deep</a>). 
+  If the deep mode statement is missing, the layout netlist will be flat (i.e. without
+  subcircuits).
+  </p>
+
+  <p>
+  The second useful feature is "align" (<a href="/about/lvs_ref_global.xml#align">align</a>). 
+  This statement will remove circuits from the layout or schematic netlist which are
+  unknown in the other netlist. Often, layouts contain helper cells which are not 
+  corresponding to a circuit (e.g. via cells). These are removed in this step. Eventually, 
+  this step will also flatten the schematic netlist if the layout has been extracted
+  in a flat way.
+  </p>
+
+  <p>
+  In general, it's a good idea to include "align" before "netlist.simplify" or 
+  similar netlist manipulation and the "compare" step.
+  </p>
+
+  <p>
+  A very useful side effect of "align" is this: it will remove circuits above the 
+  top level circuit of either side. So it will eventually render a sub-tree from 
+  the circuit tree and use that for compare. This enables <b>subcell verification</b>:
+  by selecting a subcell in the layout hierarchy, an "align"-enabled LVS script will
+  compare this cell against the corresponding subcircuit in the schematic netlist.
+  It will ignore the parent hierarchy of this subcircuit. This way, you can work yourself 
+  upwards in the hierarchy and fix LVS errors cell by cell with the same schematic netlist.
+  </p>
+
+  <h2>How the compare algorithm works</h2>
+
+  <p>
+  The coarse flow of the netlist compare algorithm is this:
+  </p>
+
+  <pre>foreach circuit bottom up:
+  if matching circuit found in reference netlist:
+    if all subcircuits have been matched and pin matching has been established for them:
+      compare net graph locally from this circuit
+    else:
+      skip circuit with warning
+  else:
+    issue a circuit mismatch error</pre>
+
+  <p>
+  A consequence of this flow is that the compare will stop treating parent circuits when 
+  one circuit's pins can't be matched to pins from the corresponding reference circuit
+  or the corresponding circuit can't be found in the reference netlist. This behaviour 
+  fosters a bottom-up debugging approach: first fix the issues in subcircuits, then
+  proceed to the parent circuits.
+  </p>
+
+  <p>
+  The local net graph compare algorithm is a backtracking algorithm with 
+  hinting through topological net classification. Topological net classification 
+  is based on nearest-net neighborhood. The following image illustrates this:
+  </p>
+
+  <p>
+  <img src="/manual/net_graph.png"/>
+  </p>
+
+  <p>
+  Here the IN net's neighborhood is VDD via a traversal of gate to source/drain 
+  over M1, to OUT via a twofold traversal of gate to source/drain over M1 and M2 
+  and to VSS via another single traversal of gate to source/drain over M2.
+  This uniquely identifies IN in this simple circuit. In effect, OUT, VDD and VSS
+  can be identified uniquely because their transitions from the IN net are 
+  unambigously identifying them. The topological neighborhood is a simple metrics
+  which allows identifying matching nets from two netlists and deducing further relations.
+  </p>
+
+  <p>
+  In big netlists, the algorithm will first try to match nets unambigously according 
+  to their neighborhood metrics and register them as paired nets.
+  Such pairs often allow deducing further matching pairs. This deduction is 
+  continued until all non-ambiguous pairing options are exhausted.
+  For resolving ambiguities, backtracking is employed: 
+  the algorithm proposes a match and tentatively proceeds with this assumption. 
+  If this execution path leads to a mismatch or logical contradiction, 
+  the algorith will go back to the beginning and restart with a 
+  new proposal. Backtracking is usually required mainly to match networks
+  with a high symmetry such as clock trees.
+  </p>
+
+</doc>
