@@ -1,7 +1,7 @@
 
 DESTDIR = $$OUT_PWD/../..
 TARGET = klayout_lay
-
+QT += printsupport
 include($$PWD/../../lib.pri)
 
 DEFINES += MAKE_LAY_LIBRARY

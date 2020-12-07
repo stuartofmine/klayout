@@ -1,6 +1,11 @@
 
 include(klayout.pri)
 
+
+QMAKE_CXX = ccache $$QMAKE_CXX//speed up
+
+CONFIG += resources_big
+
 TEMPLATE = subdirs
 
 SUBDIRS = \
@@ -30,6 +35,7 @@ SUBDIRS = \
 
 LANG_DEPENDS =
 MAIN_DEPENDS =
+
 
 equals(HAVE_RUBY, "1") {
   SUBDIRS += rba

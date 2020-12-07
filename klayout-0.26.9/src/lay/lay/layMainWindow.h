@@ -29,7 +29,9 @@
 
 #include <QStackedWidget>
 #include <QMainWindow>
-#include <QPrinter>
+//#include <QPrinter>
+#include <QtPrintSupport/QPrinter>
+
 #include <QDialog>
 #include <QTimer>
 #include <QByteArray>
