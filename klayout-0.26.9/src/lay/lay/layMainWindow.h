@@ -29,8 +29,8 @@
 
 #include <QStackedWidget>
 #include <QMainWindow>
-//#include <QPrinter>
-#include <QtPrintSupport/QPrinter>
+#include <QPrinter>//qt4
+//#include <QtPrintSupport/QPrinter>//qt5
 
 #include <QDialog>
 #include <QTimer>
