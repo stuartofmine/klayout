@@ -6,17 +6,17 @@
 
 需要安装的工具如下：
 
-C ++工具链：gcc，g ++和make
+**C ++** ：gcc，g ++和make
 
-Qt包括开发工具：libqt4-dev-bin和libqt4-dev，qt4-qmake
+**Qt**：libqt4-dev-bin和libqt4-dev，qt4-qmake
 
-Ruby：ruby和ruby-dev
+**Ruby**：ruby和ruby-dev
 
-Python：python3和python3-dev
+**Python**：python3和python3-dev
 
-zlib：libz-dev
+**zlib**：libz-dev
 
-加速编译：ccache
+**加速编译**：ccache
 
 ## qmake
 
