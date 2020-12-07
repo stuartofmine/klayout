@@ -59,6 +59,14 @@
 
 ## qtcreator
 
+当QTcreator使用的qmake为qt5时，应将
+
+    #include<QPrinter>
+改为
+    
+    #include<QtPrintSupport/QPrinter>
+    
+    
 默认编译会因内存不足报错，使用
 
     free
