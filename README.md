@@ -111,4 +111,13 @@
     
 以上代码在rba.cc的134行加入了一个断点。
 
-使用qtcreator进行断点调试正在摸索中。。。
+### qtcreator
+
+1.在项目-Build中关闭 shadow build
+
+2.在项目-Run-运行配置中修改运行配置为klayout_main
+
+点击编译，耗时约十分钟。
+
+成功:)
+
