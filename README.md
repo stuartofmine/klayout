@@ -43,6 +43,7 @@
     vim ~/.bashrc
 
 在目录最后输入
+
     export LD_LIBRARY_PATH=“你的bin-release目录路径”
 
 保存并退出
@@ -61,19 +62,20 @@
 
 当QTcreator使用的qmake为qt5时，应将
 
-    #include<QPrinter>
+    #include <QPrinter>
 改为
     
-    #include<QtPrintSupport/QPrinter>
+    #include <QtPrintSupport/QPrinter>
     
     
-默认编译会因内存不足报错，使用
+默认编译会因笔记本内存不足被中止，使用
 
-    free
-    dd if=/dev/zero of=/var/swap.img bs=1024k count=1000
-    mkswap /var/swap.img
-    swapon /var/swap.img
-    free
+    sudo fallocate -l 1G /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    sudo cp /etc/fstab /etc/fstab.bak
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 来创建交换分区。
 
