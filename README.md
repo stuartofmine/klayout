@@ -99,5 +99,16 @@
 
     ./klayout
 
+## 断点调试
+### gdb
+
+示例：
+
+    gdb ./klayout
+    b rba.cc:134
+    Make breakpoint pending on future shared library load? (y or [n]) y
+    r
+    
+以上代码在rba.cc的134行加入了一个断点。
 
 使用qtcreator进行断点调试正在摸索中。。。
