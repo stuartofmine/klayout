@@ -60,7 +60,12 @@
 
 ## qtcreator
 
-当QTcreator使用的qmake为qt5时，应将
+
+1.在项目-Build中关闭 shadow build
+
+2.在项目-Run-运行配置中修改运行配置为klayout_main
+
+3.当QTcreator使用的qmake为qt5时，应将
 
     #include <QPrinter>
 改为
@@ -68,7 +73,7 @@
     #include <QtPrintSupport/QPrinter>
     
     
-默认编译会因笔记本内存不足被中止，使用
+4.默认编译会因笔记本内存不足被中止，使用
 
     sudo fallocate -l 4G /swapfile
     sudo chmod 600 /swapfile
@@ -79,28 +84,37 @@
 
 来创建交换分区。
 
-编译完成。耗时约十分钟
+5.关闭shadow build后，生成的动态库位于src目录下（若不关闭则生成一个build-klayout-Desktop-xxxxxxxx目录）
 
-进入build-klayout-Desktop-xxxxxxxx目录下，会发现其结构与bin-release目录相似。
-
-那么同样的：
+与bin-release目录同样的，将src目录加入~/.bashrc。
 
     vim ~/.bashrc
   
 在其末尾添加  
 
-    export LD_LIBRARY_PATH=“你的build-klayout-Desktop-xxxxxxxx目录路径”
+    export LD_LIBRARY_PATH=“你的src目录路径”
 
 保存并退出
 
     source ~/.bashrc
   
-再运行
+6.如果遇到Makefile错误，提示plugins目录下无法编译完成。形如下图
 
-    ./klayout
+![avatar](/home/gao/Desktop/1.png)
 
-## 断点调试
-### gdb
+这是由于src目录下的Makefile进入plugins子项目流程时，没有清除上一次失败构建留下的Makefile，并且一共有三个Makefile需要清除。
+
+暂时对src目录下的Makefile不作修改，打开终端，进入plugins目录，输入
+
+    rm Makefile */Makefile
+
+即可。
+
+7.点击编译。耗时约十分钟。
+
+8.成功:)
+
+## gdb
 
 示例：
 
@@ -112,12 +126,6 @@
 以上代码在rba.cc的134行加入了一个断点。
 
 ### qtcreator
-
-1.在项目-Build中关闭 shadow build
-
-2.在项目-Run-运行配置中修改运行配置为klayout_main
-
-点击编译，耗时约十分钟。
 
 成功:)
 
