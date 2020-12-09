@@ -65,14 +65,19 @@
 
 2.在项目-Run-运行配置中修改运行配置为klayout_main
 
-3.当QTcreator使用的qmake为qt5时，应将
+3.当QTcreator使用的qmake为qt5时，应将layMainWindow.h中的
 
     #include <QPrinter>
 改为
     
     #include <QtPrintSupport/QPrinter>
     
+同时，需要在lay.pro中添加
     
+    QT += printsupport
+    
+保存。
+
 4.默认编译会因笔记本内存不足被中止，使用
 
     sudo fallocate -l 4G /swapfile
