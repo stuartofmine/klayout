@@ -100,11 +100,11 @@
   
 6.如果遇到Makefile错误，提示plugins目录下无法编译完成。形如下图
 
-![avatar](/home/gao/Desktop/1.png)
+![bug_png](https://github.com/stuartofmine/klayout/blob/master/klayout-0.26.9/bug.png)
 
 这是由于src目录下的Makefile进入plugins子项目流程时，没有清除上一次失败构建留下的Makefile，并且一共有三个Makefile需要清除。
 
-暂时对src目录下的Makefile不作修改，打开终端，进入plugins目录，输入
+暂时对src目录下的Makefile不作修改，打开终端，进入src/plugins目录，输入
 
     rm Makefile */Makefile
 
@@ -125,7 +125,4 @@
     
 以上代码在rba.cc的134行加入了一个断点。
 
-### qtcreator
-
-成功:)
 
