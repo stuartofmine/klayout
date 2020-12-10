@@ -38,7 +38,7 @@
 
 进入 bin-release目录下
 
-输入
+输入，注意，由于版本不同，在服务器上应为~/.zshrc
 
     vim ~/.bashrc
 
@@ -48,7 +48,7 @@
 
 保存并退出
 
-输入
+输入.注意，由于版本不同，在服务器上应为~/.zshrc
 
     source ~/.bashrc
 
@@ -91,7 +91,7 @@
 
 5.关闭shadow build后，生成的动态库位于src目录下（若不关闭则生成一个build-klayout-Desktop-xxxxxxxx目录）
 
-与bin-release目录同样的，将src目录加入~/.bashrc。
+与bin-release目录同样的，将src目录加入~/.bashrc。注意，由于版本不同，在服务器上应为~/.zshrc
 
     vim ~/.bashrc
   
@@ -99,7 +99,7 @@
 
     export LD_LIBRARY_PATH=“你的src目录路径”
 
-保存并退出
+保存并退出,注意，由于版本不同，在服务器上应为~/.zshrc
 
     source ~/.bashrc
   
