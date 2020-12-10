@@ -22,9 +22,9 @@
 
 进入klayout目录下，打开终端，输入
 
-    ./build.sh
+    ./build.sh -j8
 
-默认调用qmake.
+默认调用qmake，使用-j8设置为八线程。
 
 如果报错提示找不到qmake，输入
 
