@@ -22,9 +22,9 @@
 
 进入klayout目录下，打开终端，输入
 
-    ./build.sh -j8
+    ./build.sh -j8 -ruby /usr/bin/ruby
 
-默认调用qmake，使用-j8设置为八线程。
+默认调用qmake，使用-j8设置为八线程。使用-j32设置32线程运行。具体线程数根据内核数而定。
 
 如果报错提示找不到qmake，输入
 
@@ -61,9 +61,21 @@
 ## qtcreator
 
 
-1.在项目-Build中关闭 shadow build
+1.在项目-Build中关闭 shadow build。在额外参数一栏，输入：
 
-2.在项目-Run-运行配置中修改运行配置为klayout_main
+    HAVE_RUBY=1
+    RUBYVERSIONCODE=20505 
+    RUBYINCLUDE=/usr/include/ruby-2.5.0 
+    RUBYINCLUDE2=/usr/include/x86_64-linux-gnu/ruby-2.5.0 
+    RUBYLIBFILE=/usr/lib/x86_64-linux-gnu/libruby-2.5.so.2.5.
+    
+注意，所用ruby版本为ruby-2.5.0版本，其他版本对上述代码更改版本号即可。
+
+2.在项目-Run-运行配置中修改运行配置为klayout_main。
+
+在Command line arguments一栏输入
+
+    -e
 
 3.当QTcreator使用的qmake为qt5时，应将layMainWindow.h中的
 
