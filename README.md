@@ -142,4 +142,12 @@
     
 以上代码在rba.cc的134行加入了一个断点。
 
+## 直接使用.drc编译，不开GUI
 
+将你需要的.drc 放在src目录下（关闭shadow build时）
+
+在Qt的项目->run->Command line arguments里内输入
+
+    -x set args -d 41 -b -r ./你的drc文件 -zz
+
+这样不会开启GUI界面，但是断点调试之类与之前一致
